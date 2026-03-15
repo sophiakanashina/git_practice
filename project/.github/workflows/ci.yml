@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Show dependency file
+        run: cat environment.yml
+
+      - name: Set up micromamba
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environment.yml
+          cache-environment: false
+          cache-downloads: true
+
+      - name: List environment
+        run: micromamba list
+
+      - name: Install project
+        run: pip install -e .
+
+      - name: Build Sphinx documentation
+        run: |
+          cd docs
+          make html
+        shell: bash -el {0}
+
+      - name: Run tests
+        run: pytest

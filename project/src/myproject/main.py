@@ -1,4 +1,4 @@
-def finction():
+def function():
  """
  This is a function which pront "Hello World"
  """
