@@ -1,46 +1,26 @@
-name: CI
+name: build
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 * * 0'
-
-defaults:
-  run:
-    shell: bash -l {0}
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Show dependency file
-        run: cat environment.yml
-
-      - name: Set up micromamba
-        uses: mamba-org/setup-micromamba@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          environment-file: environment.yml
-          cache-environment: false
-          cache-downloads: true
+          python-version: "3.12"
 
-      - name: List environment
-        run: micromamba list
-
-      - name: Install project
-        run: pip install -e .
-
-      - name: Build Sphinx documentation
+      - name: Install dependencies
         run: |
-          cd docs
-          make html
-        shell: bash -el {0}
+          python -m pip install --upgrade pip
+          pip install pytest
 
       - name: Run tests
-        run: pytest
+        run: |
+          PYTHONPATH=src pytest
