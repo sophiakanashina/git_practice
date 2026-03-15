@@ -10,11 +10,13 @@ project = 'Practice_Project'
 copyright = '2026, Sophia'
 author = 'Sophia'
 release = '15.03.20026'
-
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../../src'))
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = ["sphinx.ext.autodoc",]
 
 templates_path = ['_templates']
 exclude_patterns = []
